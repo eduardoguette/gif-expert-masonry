@@ -24,7 +24,7 @@ export const GifGrid = ({ category }) => {
         </Text>
       </Flex>
 
-      <Masonry columns='3' spacing='2' items={gifs} />
+      <Masonry columns='4' spacing='2' items={gifs} />
     </Box>
   )
 }

@@ -10,7 +10,7 @@ export const MasonryElement = ({id, elements, spacing }) => {
         }
         if (id === item.idMasonry) {
           return (
-            <Image
+            <Image 
               key={item.id}
               src={item.url}
               height={"auto"} 

@@ -5,7 +5,19 @@ import { MasonryElement } from './MasonryElement'
 let numberColums = 0
 export const Masonry = ({ columns, spacing, items }) => {
   const [itemsForMasonry, setItemsForMasonry] = useState(null)
-
+  let column = columns
+  if (columns > 5) {
+    throw new Error('Error in number of columns parameter ')
+  }
+  if (window.matchMedia('(min-width: 1024px)').matches) {
+    column = columns > 3 && columns
+  } else if (window.matchMedia('(min-width: 800px)').matches) {
+    column = columns > 2 && 3
+  } else if (window.matchMedia('(min-width: 400px)').matches) {
+    column = columns > 1 && 2
+  } else {
+    column = 1
+  }
   useEffect(() => {
     setItemsForMasonry(
       items.map((item) => {
@@ -19,12 +31,12 @@ export const Masonry = ({ columns, spacing, items }) => {
         }
       })
     )
-  }, [items])
+  }, [items, column])
 
   return (
-    <Flex gap={spacing}>
+    <Flex gap={spacing} mx='auto'>
       {itemsForMasonry &&
-        Array.from({ length: columns }).map((_, index) => {
+        Array.from({ length: column }).map((_, index) => {
           return (
             <MasonryElement
               id={parseInt(index) + 1}

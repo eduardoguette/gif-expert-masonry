@@ -1,30 +1,51 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Image, Text } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
-import { getGifs } from '../helpers/getGifs'
 import { Masonry } from './Masonry'
 
-export const GifGrid = ({ category }) => {
-  const [gifs, setGifs] = useState([])
+let observer = null
 
-  useEffect(() => {
-    getGifs(category).then((data) => setGifs(data))
-  }, [])
+export const GifGrid = ({ category, gifs }) => {
+  const [avatarFind, setAvatarFind] = useState(null)
+
+  useEffect(() => {  
+    if (!avatarFind && gifs)
+      setAvatarFind(gifs[Math.floor(Math.random() * gifs.length)])
+  }, [gifs, category])
+
   return (
     <Box fontWeight={600}>
-      <Flex alignItems='center' gap='2'> 
-        <Text
-          fontSize='2rem'
-          bgGradient='linear(to-r, #7928CA,#ff50cd)'
-          bgClip='text'
-          mb={2}
-          textTransform='uppercase'
-          fontWeight='bold'
+      <Flex alignItems='center' gap='4' my={2}>
+        <Box
+          height={24}
+          width={24}
+          bg={'gray.100'}
+          border={'1px solid'}
+          borderColor={'gray.200'}
+          display={'grid'}
+          placeContent='center'
+          rounded={'full'}
+          overflow='hidden'
         >
-          {category}
-        </Text>
-      </Flex>
+          {avatarFind && (
+            <Image
+              src={avatarFind.url}
+              alt={avatarFind.title}
+              height='100px'
+              width='100px'
+            />
+          )}
+        </Box>
+        <Flex direction={'column'}>
+          <Text fontSize={'x-large'} fontWeight={'bold'} mb='1'>
+            {category === 'Trending' ? 'Trending Gifs' : category}
+          </Text>
 
-      <Masonry columns='4' spacing='2' items={gifs} />
+          <Button size={'sm'} bg={'purple.500'} color={'white'}>
+            Seguir
+          </Button>
+        </Flex>
+      </Flex>
+      {gifs && <Masonry columns='4' spacing='2' items={gifs} />}
     </Box>
   )
 }

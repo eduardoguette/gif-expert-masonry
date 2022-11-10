@@ -1,12 +1,15 @@
-export const getGifs = async (category) => {
+export const getGifs = async (category, page) => {   
   const APIKey = 'fzId3VBuREjibqafqpDWOufrEfE0rw3r'
-  const url = `https://api.giphy.com/v1/gifs/search?api_key=${APIKey}&q=${category}&limit=100&offset=0&rating=g`
+  let url = `https://api.giphy.com/v1/gifs/search?api_key=${APIKey}&q=${category}&limit=50&offset=${page}&rating=g`
+  if (category.includes('Trending')) {
+    url = `https://api.giphy.com/v1/gifs/trending?api_key=${APIKey}&q=${'Trending Gifs'}&limit=50&offset=${page}&rating=g`
+  } 
   const resp = await fetch(url)
-  const { data } = await resp.json()
+  const { data, pagination: { total_count } } = await resp.json()
   const gifs = data.map((img) => ({
     id: img.id,
     title: img.title,
-    url: img.images.downsized_medium.url
+    url: img.images.preview_webp.url
   }))
-  return gifs
+  return ({ data: gifs, total_count })
 }

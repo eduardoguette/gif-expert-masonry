@@ -1,25 +1,31 @@
-import { Flex, Image } from '@chakra-ui/react'
+import { Grid } from '@nextui-org/react'
+import { MansonryCard } from './MansonryCard'
 
 let idMasonry = 1
-export const MasonryElement = ({ id, items, spacing, column }) => { 
+export const MasonryElement = ({ id, items, spacing, column }) => {
   return (
-    <Flex flexDirection='column' gap={spacing} data-id={id} width={'100%'}>
-      {items.map((item, indx) => {
-        if (idMasonry === 3) {
-          idMasonry = 1
-        }
-        if (id === item.idMasonry) {
-          return (
-            <Image
-              key={item.id+indx}
-              src={item.url}
-              height={'auto'} 
-              fallbackSrc='https://i.imgur.com/nX8HUW9.gif'
-            />
-          )
-        }
-        idMasonry++
-      })}
-    </Flex>
+    <Grid
+      css={{
+        gap: spacing,
+        width: '100%'
+      }}
+      data-id={id}
+      aria-label='Grid'
+    >
+      {
+        // eslint-disable-next-line array-callback-return
+        items.map((item, indx) => {
+          if (idMasonry === 3) {
+            idMasonry = 1
+          }
+          if (id === item.idMasonry) {
+            return (
+              <MansonryCard key={item.id + indx} item={item} spacing={spacing} />
+            )
+          }
+          idMasonry++
+        })
+      }
+    </Grid>
   )
 }

@@ -1,12 +1,12 @@
-import { Grid } from '@chakra-ui/react'
+
+import { Grid } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { MasonryElement } from './MasonryElement'
 
 let numberColums = 0
 export const Masonry = ({ columns, spacing, items }) => {
   const [itemsForMasonry, setItemsForMasonry] = useState(null)
-  let column = detectNumberColumns(columns) 
-  //console.log(items)
+  const column = detectNumberColumns(columns)
   useEffect(() => {
     setItemsForMasonry(
       items.map((item) => {
@@ -23,7 +23,13 @@ export const Masonry = ({ columns, spacing, items }) => {
   }, [items, column])
 
   return (
-    <Grid gap={spacing} mx='auto' templateColumns={`repeat(${column},minmax(min(300px,100%),1fr))`}>
+    <Grid.Container
+      css={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${column},minmax(min(300px,100%),1fr))`,
+        gap: spacing
+      }}
+    >
       {itemsForMasonry &&
         Array.from({ length: column }).map((_, index) => {
           return (
@@ -36,11 +42,11 @@ export const Masonry = ({ columns, spacing, items }) => {
             />
           )
         })}
-    </Grid>
+    </Grid.Container>
   )
 }
 
-function detectNumberColumns(columns) {
+function detectNumberColumns (columns) {
   let column = 1
   if (columns >= 5) {
     throw new Error('Error in number of columns parameter ')
@@ -51,7 +57,6 @@ function detectNumberColumns(columns) {
     column = 3
   } else if (window.matchMedia('(min-width: 600px)').matches) {
     column = 2
-  } 
+  }
   return column
 }
- 

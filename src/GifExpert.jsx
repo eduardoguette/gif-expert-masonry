@@ -1,18 +1,17 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Container, Row, Text } from '@nextui-org/react'
 import { useEffect, useRef, useState } from 'react'
 import { AddCategory } from './components/AddCategory'
 import { GifGrid } from './components/GifGrid'
 import { getGifs } from './helpers/getGifs'
+
 const DEFAULT_CATEGORY = 'Trending'
 let observer
 let page = 0
-function GifExpert() {
+export default function GifExpert ({ setDarkMode }) {
   const [lastCategory, setLastCategory] = useState(null)
   const [newPage, setNewPage] = useState(false)
   const [gifs, setGifs] = useState(null)
-  const prevCat = useRef(null)
   const refItem = useRef(null)
-
   const onAddCategory = (newCategory) => {
     setLastCategory(newCategory)
     page = 0
@@ -21,30 +20,18 @@ function GifExpert() {
 
   useEffect(() => {
     if (!observer && refItem.current) {
-      console.log('observer', refItem)
-      observer = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach(function (entry) {
-            setNewPage(entry.isIntersecting)
-          })
-        },
-        {
-          rootMargin: '200px'
-        }
-      )
-
-      observer.observe(refItem.current)
+      createObserver(setNewPage, refItem)
     }
     if (!gifs && page === 0) {
-      getGifs(DEFAULT_CATEGORY, page).then(({ data, total_count }) => {
+      getGifs(DEFAULT_CATEGORY, page).then(({ data, totalCount }) => {
         setGifs(data)
       })
       page += 50
       return
     }
-    if (newPage) {
+    if (newPage && gifs) {
       getGifs(lastCategory || DEFAULT_CATEGORY, page).then(
-        ({ data, total_count }) => {
+        ({ data, totalCount }) => {
           setGifs((p) => [...p, ...data])
         }
       )
@@ -53,33 +40,50 @@ function GifExpert() {
   }, [lastCategory, refItem.current, newPage])
 
   return (
-    <Box minHeight={'100vh'}>
-      <Box bg='gray.50' borderBottom={'1px solid'} borderColor={'gray.200'}>
-        <Flex
-          alignItems={'center'}
-          justifyContent={'space-between'}
-          paddingInline={5}
-          paddingBlock={3}
-          mx={'auto'}
+    <Container
+      aria-describedby='Main'
+      css={{ paddingBlock: '1rem' }}
+    >
+      <Row
+        align='center'
+        css={{
+          flexDirection: 'column',
+          gap: '1rem',
+          padding: 0,
+          '@xs': { flexDirection: 'row', justifyContent: 'space-between' }
+        }}
+      >
+        <Text
+          css={{
+            textGradient: '45deg, $blue800 -20%, $pink700 50%',
+            paddingInline: '.8rem',
+            margin: 0
+          }}
+          h1
+          weight='extrabold'
         >
-          <Text
-            bgGradient='linear(to-l, #7928CA, #FF0080)'
-            bgClip='text'
-            fontSize='2xl'
-            fontWeight='extrabold'
-          >
-            GifsMasonry
-          </Text>
-          <AddCategory onNewCategory={onAddCategory} />
-          <Box width={'110px'} />
-        </Flex>
-      </Box>
-      <Box mt='5' padding={4} mx={'auto'}>
-        <GifGrid category={lastCategory || DEFAULT_CATEGORY} gifs={gifs} />
-      </Box>
-      {<div ref={refItem}></div>}
-    </Box>
+          GifsMasonry
+        </Text>
+        <AddCategory onNewCategory={onAddCategory} />
+      </Row>
+      <Row>
+        <GifGrid gifs={gifs} />
+      </Row>
+      <div ref={refItem} />
+    </Container>
   )
 }
-
-export default GifExpert
+function createObserver (setNewPage, refItem) {
+  // eslint-disable-next-line no-undef
+  observer = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach(function (entry) {
+        setNewPage(entry.isIntersecting)
+      })
+    },
+    {
+      rootMargin: '200px'
+    }
+  )
+  observer.observe(refItem.current)
+}

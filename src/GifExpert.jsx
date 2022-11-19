@@ -1,49 +1,17 @@
-import { Container, Row, Text } from '@nextui-org/react'
-import { useEffect, useRef, useState } from 'react'
+import { Button, Row, Text } from '@nextui-org/react'
+import { useState } from 'react'
 import { AddCategory } from './components/AddCategory'
 import { GifGrid } from './components/GifGrid'
-import { getGifs } from './helpers/getGifs'
 
-const DEFAULT_CATEGORY = 'Trending'
-let observer
-let page = 0
-export default function GifExpert ({ setDarkMode }) {
-  const [lastCategory, setLastCategory] = useState(null)
-  const [newPage, setNewPage] = useState(false)
-  const [gifs, setGifs] = useState(null)
-  const refItem = useRef(null)
+export default function GifExpert () {
+  const [category, setCategory] = useState('Trending Gif')
+
   const onAddCategory = (newCategory) => {
-    setLastCategory(newCategory)
-    page = 0
-    setGifs([])
+    setCategory(newCategory)
   }
 
-  useEffect(() => {
-    if (!observer && refItem.current) {
-      createObserver(setNewPage, refItem)
-    }
-    if (!gifs && page === 0) {
-      getGifs(DEFAULT_CATEGORY, page).then(({ data, totalCount }) => {
-        setGifs(data)
-      })
-      page += 50
-      return
-    }
-    if (newPage && gifs) {
-      getGifs(lastCategory || DEFAULT_CATEGORY, page).then(
-        ({ data, totalCount }) => {
-          setGifs((p) => [...p, ...data])
-        }
-      )
-      page += 50
-    }
-  }, [lastCategory, refItem.current, newPage])
-
   return (
-    <Container
-      aria-describedby='Main'
-      css={{ paddingBlock: '1rem' }}
-    >
+    <main aria-describedby='Main' style={{ padding: '1rem' }}>
       <Row
         align='center'
         css={{
@@ -56,7 +24,6 @@ export default function GifExpert ({ setDarkMode }) {
         <Text
           css={{
             textGradient: '45deg, $blue800 -20%, $pink700 50%',
-            paddingInline: '.8rem',
             margin: 0
           }}
           h1
@@ -67,23 +34,38 @@ export default function GifExpert ({ setDarkMode }) {
         <AddCategory onNewCategory={onAddCategory} />
       </Row>
       <Row>
-        <GifGrid gifs={gifs} />
+        <GifGrid category={category} />
       </Row>
-      <div ref={refItem} />
-    </Container>
+      <Button.Group shadow color='gradient' auto>
+        <Button
+          onPress={() => window.scrollTo(0, 0)}
+          css={{
+            position: 'fixed',
+            zIndex: 2,
+            bottom: '2rem',
+            right: '2rem',
+            height: 'max-content',
+            padding: '16px',
+            display: 'grid',
+            placeItems: 'center',
+            borderRadius: '100px',
+            border: 0
+          }}
+        >
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 24 24'
+            width='24'
+            height='24'
+          >
+            <path fill='none' d='M0 0h24v24H0z' />
+            <path
+              d='M12 10.828l-4.95 4.95-1.414-1.414L12 8l6.364 6.364-1.414 1.414z'
+              fill='rgba(255,255,255,1)'
+            />
+          </svg>
+        </Button>
+      </Button.Group>
+    </main>
   )
-}
-function createObserver (setNewPage, refItem) {
-  // eslint-disable-next-line no-undef
-  observer = new IntersectionObserver(
-    (entries, observer) => {
-      entries.forEach(function (entry) {
-        setNewPage(entry.isIntersecting)
-      })
-    },
-    {
-      rootMargin: '200px'
-    }
-  )
-  observer.observe(refItem.current)
 }

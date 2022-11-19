@@ -27,6 +27,7 @@ export const MansonryCard = ({ item, spacing }) => {
         css={{
           width: '100%'
         }}
+        data-image-id={item.id}
         onClick={() => copyGif(item.id)}
       />
       {copied && (
@@ -37,17 +38,17 @@ export const MansonryCard = ({ item, spacing }) => {
             display: 'grid',
             placeContent: 'center',
             inset: 0,
-            background: 'rgba(255,255,255,.1)',
-            backdropFilter: 'blur(2px)'
+            background: 'rgba(255,255,255,.4)',
+            backdropFilter: 'blur(5px)'
           }}
         >
           <Text
             weight='bold' css={{
-              background: 'rgba(19, 27, 22, 0.6)',
+              background: 'rgba(27, 27, 27, 0.6)',
               backdropFilter: 'blur(5px)',
               padding: '.3rem 1.1rem',
-              borderRadius: '5px'
-
+              borderRadius: '5px',
+              color: 'White'
             }}
           >
             Copied!

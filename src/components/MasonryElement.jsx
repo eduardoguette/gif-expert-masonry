@@ -15,7 +15,7 @@ export const MasonryElement = ({ id, items, spacing, column }) => {
       {
         // eslint-disable-next-line array-callback-return
         items.map((item, indx) => {
-          if (idMasonry === 3) {
+          if (idMasonry === column) {
             idMasonry = 1
           }
           if (id === item.idMasonry) {

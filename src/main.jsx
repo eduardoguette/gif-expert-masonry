@@ -33,9 +33,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     }}
   >
     <NextUIProvider theme={{ darkTheme, lightTheme }}>
-      <React.StrictMode>
-        <GifExpert />
-      </React.StrictMode>
+
+      <GifExpert />
     </NextUIProvider>
   </NextThemesProvider>
 )

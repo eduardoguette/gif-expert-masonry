@@ -1,4 +1,3 @@
-
 import { Grid } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { MasonryElement } from './MasonryElement'
@@ -8,20 +7,21 @@ export const Masonry = ({ columns, spacing, items }) => {
   const [itemsForMasonry, setItemsForMasonry] = useState(null)
   const column = detectNumberColumns(columns)
   useEffect(() => {
-    setItemsForMasonry(
-      items.map((item) => {
-        numberColums++
-        if (numberColums > parseInt(column)) {
-          numberColums = 1
-        }
-        return {
-          ...item,
-          idMasonry: numberColums
-        }
-      })
-    )
-  }, [items, column])
-
+    if (Number(column)) {
+      setItemsForMasonry(
+        items.map((item) => {
+          numberColums++
+          if (numberColums > parseInt(column)) {
+            numberColums = 1
+          }
+          return {
+            ...item,
+            idMasonry: numberColums
+          }
+        })
+      )
+    }
+  }, [items])
   return (
     <Grid.Container
       css={{

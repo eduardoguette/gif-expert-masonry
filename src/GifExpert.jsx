@@ -44,7 +44,7 @@ export default function GifExpert () {
             zIndex: 2,
             bottom: '2rem',
             right: '2rem',
-            height: 'max-content',
+            height: '56px',
             padding: '16px',
             display: 'grid',
             placeItems: 'center',
